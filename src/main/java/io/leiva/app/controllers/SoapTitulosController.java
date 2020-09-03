@@ -29,9 +29,68 @@ public class SoapTitulosController {
 	
 	private static String UPLOADED_FOLDER = "F://temp//";
 
-    @GetMapping("/cargarTitulo")
-    public String convertirNumeroPalabras() {
-        return soapClientTitulos.consultaTitulo(303,"user","password");
+    @PostMapping("/cargarTitulo")
+    public Map<String, Object> cargarTitulo(@RequestParam("file") MultipartFile file,HttpServletRequest request,
+    RedirectAttributes redirectAttributes) throws Exception {
+    	 if (file.isEmpty()) {
+    		 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Archivo vacio");
+         }
+    	 HashMap<String, Object> map = new HashMap<>();
+    	 map.put("nombre_archivo", file.getOriginalFilename());
+    	 
+    	 byte[] titulo = file.getBytes();
+    	 String usuario = request.getParameter("usuario");
+    	 String password = request.getParameter("password");
+    	 String nombre = request.getParameter("nombre_archivo");
+    	 String ambiente = request.getParameter("ambiente");
+    	 //return map;
+         return soapClientTitulos.enviarTitulo(nombre, titulo, usuario, password, ambiente);
+    }
+    
+    @PostMapping("/consultarTitulo")
+    public Map<String, Object> consultarTitulo(HttpServletRequest request,
+    RedirectAttributes redirectAttributes) throws Exception {
+    	
+    	 HashMap<String, Object> map = new HashMap<>();
+    	 
+    	 String usuario = request.getParameter("usuario");
+    	 String password = request.getParameter("password");
+    	 String no_lote = request.getParameter("no_lote");
+    	 String ambiente = request.getParameter("ambiente");
+    	 //map.put("numeroLote",no_lote);
+    	 //return map;
+         return soapClientTitulos.consultaTitulo(Integer.parseInt(no_lote), usuario, password, ambiente);
+    }
+    
+    @PostMapping("/descargarTitulo")
+    public Map<String, Object> descargarTitulo(HttpServletRequest request,
+    RedirectAttributes redirectAttributes) throws Exception {
+    	
+    	 HashMap<String, Object> map = new HashMap<>();
+    	 
+    	 String usuario = request.getParameter("usuario");
+    	 String password = request.getParameter("password");
+    	 String no_lote = request.getParameter("no_lote");
+    	 String ambiente = request.getParameter("ambiente");
+    	 //map.put("numeroLote",no_lote);
+    	 //return map;
+         return soapClientTitulos.descargaTitulo(Integer.parseInt(no_lote), usuario, password, ambiente);
+    }
+    
+    @PostMapping("/cancelarTitulo")
+    public Map<String, Object> cancelarTitulo(HttpServletRequest request,
+    RedirectAttributes redirectAttributes) throws Exception {
+    	
+    	 HashMap<String, Object> map = new HashMap<>();
+    	 
+    	 String usuario = request.getParameter("usuario");
+    	 String password = request.getParameter("password");
+    	 String folio_control = request.getParameter("folio_control");
+    	 String motivo = request.getParameter("motivo");
+    	 String ambiente = request.getParameter("ambiente");
+    	 //map.put("numeroLote",no_lote);
+    	 //return map;
+         return soapClientTitulos.cancelaTitulo(folio_control, usuario, password,motivo, ambiente);
     }
     
     
